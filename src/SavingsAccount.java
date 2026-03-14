@@ -1,4 +1,4 @@
-package com.bank.domain;
+package com.bank.domain.src;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -121,13 +121,13 @@ public final class SavingsAccount {
     @Override
     public String toString() {
         return "SavingsAccount{"
-            + "id="            + auditMetadata.getId()
-            + ", createdAt='"  + auditMetadata.getCreatedAt()  + '\''
-            + ", currency='"   + financialDetails.getCurrencyType() + '\''
+            + "id="            + auditMetadata.id()
+            + ", createdAt='"  + auditMetadata.createdAt()  + '\''
+            + ", currency='"   + financialDetails.currencyType() + '\''
             + ", taxable="     + financialDetails.isTaxable()
-            + ", balance="     + bankRecordDetails.getLedgerBalance()
+            + ", balance="     + bankRecordDetails.ledgerBalance()
             + ", ownerSSN='****" + maskedSsn() + '\''
-            + ", routing='"    + bankRecordDetails.getRoutingNumber() + '\''
+            + ", routing='"    + bankRecordDetails.routingNumber() + '\''
             + ", interestRate=" + interestRate
             + ", promoCode='"  + promoCode + '\''
             + ", txCount="     + transactions.size()
@@ -135,7 +135,7 @@ public final class SavingsAccount {
     }
 
     private String maskedSsn() {
-        String ssn = bankRecordDetails.getOwnerSSN();
+        String ssn = bankRecordDetails.ownerSSN();
         return ssn != null && ssn.length() >= 4
             ? ssn.substring(ssn.length() - 4)
             : "????";
