@@ -91,4 +91,53 @@ public final class SavingsAccount {
 
         public SavingsAccount build() { return new SavingsAccount(this); }
     }
+
+    @Override
+    public boolean equals(Object o) {
+        if (this == o) return true;                          // reflexivity
+        if (!(o instanceof SavingsAccount)) return false;   // type safety
+        SavingsAccount other = (SavingsAccount) o;
+        // Identity is determined by the account's unique audit id
+        return Double.compare(other.interestRate, interestRate) == 0
+            && Objects.equals(auditMetadata,    other.auditMetadata)
+            && Objects.equals(financialDetails,  other.financialDetails)
+            && Objects.equals(bankRecordDetails, other.bankRecordDetails)
+            && Objects.equals(transactions,      other.transactions)
+            && Objects.equals(promoCode,         other.promoCode);
+    }
+
+    @Override
+    public int hashCode() {
+        return Objects.hash(
+            auditMetadata,
+            financialDetails,
+            bankRecordDetails,
+            transactions,
+            promoCode,
+            interestRate);
+    }
+
+    /** Sensitive fields (ownerSSN) are masked to avoid leaking PII in logs. */
+    @Override
+    public String toString() {
+        return "SavingsAccount{"
+            + "id="            + auditMetadata.getId()
+            + ", createdAt='"  + auditMetadata.getCreatedAt()  + '\''
+            + ", currency='"   + financialDetails.getCurrencyType() + '\''
+            + ", taxable="     + financialDetails.isTaxable()
+            + ", balance="     + bankRecordDetails.getLedgerBalance()
+            + ", ownerSSN='****" + maskedSsn() + '\''
+            + ", routing='"    + bankRecordDetails.getRoutingNumber() + '\''
+            + ", interestRate=" + interestRate
+            + ", promoCode='"  + promoCode + '\''
+            + ", txCount="     + transactions.size()
+            + '}';
+    }
+
+    private String maskedSsn() {
+        String ssn = bankRecordDetails.getOwnerSSN();
+        return ssn != null && ssn.length() >= 4
+            ? ssn.substring(ssn.length() - 4)
+            : "????";
+    }
 }
